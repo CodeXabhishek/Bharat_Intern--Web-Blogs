@@ -28,7 +28,6 @@ exports.signUpUser = async (req, res) => {
         message: `${error._message}: Enter a valid email`,
       });
     }
-    console.log(error);
   }
 };
 
@@ -57,7 +56,7 @@ exports.loggedIn = async (req, res) => {
     res.cookie('token', token, { httpOnly: true });
     res.redirect('/admin/dashboard');
   } catch (error) {
-    console.log(error);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 

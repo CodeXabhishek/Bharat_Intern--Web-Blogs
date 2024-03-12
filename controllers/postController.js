@@ -18,7 +18,7 @@ exports.getPostPage = async (req, res) => {
       layout: adminLayout,
     });
   } catch (error) {
-    console.log(error);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
 
@@ -46,6 +46,6 @@ exports.getSearchResult = async (req, res) => {
       layout: adminLayout,
     });
   } catch (error) {
-    console.log(error);
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 };
