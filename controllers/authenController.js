@@ -15,7 +15,7 @@ exports.signUpUser = async (req, res) => {
 
     const user = await User.create({ username, password: hashedPassword });
     return res.render('message', {
-      message: 'New User Created',
+      message: 'New accout Created',
     });
   } catch (error) {
     if (error.code === 11000) {
