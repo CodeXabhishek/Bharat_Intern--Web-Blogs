@@ -7,15 +7,26 @@ const bcrypt = require('bcrypt');
 exports.signUpUser = async (req, res) => {
   try {
     const { username, password } = req.body;
+    if (!password)
+      return res.render('message', {
+        message: 'Please enter a password',
+      });
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const user = await User.create({ username, password: hashedPassword });
-    res.status(201).json({ message: 'New User Created', user });
+    return res.render('message', {
+      message: 'New User Created',
+    });
   } catch (error) {
     if (error.code === 11000) {
-      res.status(409).json({ message: 'User already in use' });
+      // res.status(409).json({ message: 'User already in use' });
+      return res.render('message', {
+        message: 'User already exist',
+      });
     } else {
-      res.status(500).json({ message: `${error.message} .` });
+      return res.render('message', {
+        message: `${error._message}: Enter a valid email`,
+      });
     }
     console.log(error);
   }
@@ -29,13 +40,17 @@ exports.loggedIn = async (req, res) => {
     const user = await User.findOne({ username });
 
     if (!user) {
-      return res.status(401).json({ message: 'Invalid  credentials' });
+      return res.render('message', {
+        message: 'Email or password are incorrect',
+      });
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
 
     if (!isPasswordValid) {
-      return res.status(401).json({ message: 'Invalid credentials' });
+      return res.render('message', {
+        message: 'Email or password are incorrect',
+      });
     }
 
     const token = jwt.sign({ userId: user._id }, process.env.JWT_SECRET);
@@ -50,7 +65,9 @@ exports.loggedIn = async (req, res) => {
 exports.userLogIn = async (req, res, next) => {
   const token = req.cookies.token;
   if (!token) {
-    return res.status(401).json({ message: 'Please log in to access' });
+    return res.render('message', {
+      message: 'Please login to access',
+    });
   }
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
